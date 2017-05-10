@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="jq.js"></script>
+	<script src="lazy.js"></script>
+	<script type="text/javascript" charset="utf-8">
+	  $(function() {
+	      $("img").lazyload({effect: "fadeIn"});
+	  });
+	</script>
+	<style>
+		img{
+			display: block;
+			width: 300px;
+			height: 300px;
+		}
+	</style>
+</head>
+<body>
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+	<img data-original="2.jpg" src="1.jpg">
+</body>
+</html>
