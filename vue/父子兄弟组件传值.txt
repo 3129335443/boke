@@ -1,0 +1,56 @@
+子组件定义 要接收的值名称message			子组件传父组件
+<v-nav @message="getChildData"></v-nav>
+
+父组件方法
+getChildData(data){
+	alert(data);
+}
+
+子组件方法 传值
+send($event){
+	this.emit("message",this.message);
+}
+
+
+
+							非父子组件传值
+var event=new Vue();
+event.$emit("x",this.message);					传值
+mounted:{							监听接收
+		event.$on("x",function(){})
+	}
+
+
+
+<component :is="组件名"></component>
+
+
+
+							更简便的传值
+							父传子
+<asd ref="自定义子组件属性名"></asd>				定义属性
+this.$refs.自定义子组件属性名.属性					取值（可以改变任意属性）
+							
+this.$parent.值						获取父元素值
+
+
+
+
+
+<va>							分发式传值
+	<div slot="v1">
+		vvvvvvvvvvvvvvvvvvvv
+	</div>
+	<div slot="v2">
+		1111111111111111
+	</div>
+</va>
+<template id="a">
+	<div>
+		<h1>aaaa123</h1>
+		<slot name="v1"></slot>
+		<h2>aaaaaaaa</h2>
+		<slot name="v2"></slot>
+	</div>
+</template>
+

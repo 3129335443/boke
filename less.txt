@@ -1,0 +1,116 @@
+less 类似与jq，可以像写变量，和函数。编译后就是css。
+//		注释不被保留
+/*注释被保留*/
+
+
+@asd:200px;
+.box{
+	width:@asd;
+}
+
+
+
+
+
+.box{
+	.border;
+	.border2(30px);
+	.border3();
+	.border4()
+}
+.border{
+	border:1px solid;
+}
+.border2(@b){
+	border:@b solid;
+}
+.border3(@b:10px){
+	border:@b solid;
+}
+.border4(@b:10px){
+	border-radius:@b solid;
+	-moz-border-radius:@b solid;
+	-webkit-radius:@b solid;
+}
+
+
+
+
+
+匹配模式
+.p(r){
+	position:relative;
+}
+.p(a){
+	position:absolute;
+}
+.p(f){
+	position:fixed;
+}
+.p(@_){
+	height:100px;
+	width:100px;
+}
+
+
+
+
+
+运算
+@asd:123px-20;
+
+
+
+
+
+嵌套
+ul{
+	li{}
+	a{
+		&:hover{}
+	}
+	&_nav{}
+}
+&上一层选择器
+&_nav可以写成li_nav
+
+
+
+
+
+@arguments
+.border(@a,@b,@c){
+	border:@arguments;
+}
+
+Fireworks
+
+
+
+避免编译
+.test{
+	width:~calc(300px-30px)		//加~不编译
+}
+
+
+
+!important
+.red{
+	color:red;	
+}
+.box{
+	.red !important;
+}
+
+
+
+.sanjiao{
+	height:0;
+	width:0;
+	overflow:hidden;//解决ie6
+	
+	border-width:10px;
+	border-color:red transparent transparent transparent;
+	
+	border-style:red dashed dashed dashed;//兼容ie6
+}

@@ -1,0 +1,5 @@
+encodeURIcomponent(string);		转码
+decodeURIcomponent(document.cookie);	获取转码
+
+document.cookie="变量名=123;expires=失效时间;path=可以访问此cookie的文件路径;
+domain=可以访问此文件的域名，secure；只有https可访问"

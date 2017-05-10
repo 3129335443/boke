@@ -1,0 +1,52 @@
+事件分为：内联模式，脚本模式
+xx.addEventListener("click",function(),false)	//1事件，2函数，3是否冒泡
+xx.removeEventListener("click",function());
+鼠标事件
+onclick		//单击，双击事件
+ondbclick
+
+onmousedown	//按下，抬起事件
+onmouseup
+
+onmouseover	//移入，移除，进入，离开，移动
+onmouseout
+onmouseenter
+onmouseleave
+onmousemove
+
+键盘事件
+onkeydown	
+onkeypress	//字符键
+onkeyup
+
+页面
+onload		//页面进入，离开
+onunload	
+
+表单
+onblur
+onselect
+onchange
+onfocus
+
+onsubmit
+onreset
+
+滚动
+window.onscroll
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+event.target/srcElement
+event.keyCode	//键码跟ascii嘛不同
+event.charCode		//字符码/ascii码范围A-Z，只有onkeypress事件可以
+
+阻止冒泡
+event.cancelBubble=true;
+event.stopPropagation();
+e.button	//0左键1滚轮2右键
+阻止右键菜单
+oncontextmemu	//return false;
+超链接拦截
+onclick		//return false;
+
+

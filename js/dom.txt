@@ -1,0 +1,38 @@
+document.getElementsByClassName();	//dom获取方法
+document.getElementsByTagName();
+document.getElementById();
+
+document.querySelector();
+document.querySelectorAll();		//js仿jq获取方法es6
+
+x.title			//title
+x.id			//id
+x.style			//风格，样式
+x.TagName		//标签名
+x.className/		//类属性,可用split分割参数空格，获取类的数组
+
+
+document.createElement(string);
+parent.appendChild(child);
+parent.insertBefore(child,previous);
+parent.replaceChild(replace,old);
+x.cloneNode();
+x.removeChild();
+document.createTextNode();
+					//增/删/改/插入/复制
+
+
+x.childNodes;		//获取子节点数组
+x.childNodes.nodeName;	//子节点名
+x.childNodes.nodeType;	//子节点类型
+x.childNodes.nodeValue	//节点值
+
+
+x.innerHTMl="string"	//设置/获取内容，可将标签字符转义
+x.innerText="string"	//设置/获取文本内容
+x.outerHTML=""		//设置获取标签字符，包括本身
+innerText和outerHTML	//非W3C标准，innerHTML不适用火狐
+
+
+
+x.set/get/removeAttributes()                //设置/获取/删除属性                  

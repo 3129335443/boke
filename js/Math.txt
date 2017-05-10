@@ -1,0 +1,26 @@
+Math.abs(x)	//绝对值
+Math.round(x)	//四舍五入、上下取整
+Math.ceil(x)
+Math.floor(x);
+Math.pow(x,y);	//x的y次方
+Math.sqrt(x);	//开平方
+Math.random(x);	//随机数
+
+Math.min(x,x);	//返回大小数
+Math.max(x,x);
+
+
+
+
+
+---------		
+x.map(function);  //高阶函数
+x.redurce(function);
+x.sort(function);
+
+
+
+
+
+(123).toString(16)	//转16进制
+parseInt("f",16)	//转10进制

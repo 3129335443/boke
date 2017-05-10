@@ -1,0 +1,5 @@
+vue.directive("指令名",function(el,bind){			定义指令
+	el.style..color=bind.value
+})
+
+<a v-指令名="传的值">123123</a>					使用指令

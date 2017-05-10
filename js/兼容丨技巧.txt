@@ -1,0 +1,23 @@
+ev.target||ev.srcElement   	 //事件源兼容
+
+function(e){
+	e=e||Event 	    	//事件兼容
+}
+
+var ggStyle=guangao.currentStyle||window.getComputedStyle(guangao,null);
+//获取dom属性兼容
+
+
+
+
+
+
+
+function(){
+	var e=e||event;
+	var target=e.target||e.srcElement;
+	if(target.nodeName.toLowerCase()=="button"){
+		target.parentNode.parentNode.remove();			//事件源响应方法----提高效率减少dom操作
+									//也叫事件委托
+	}
+}

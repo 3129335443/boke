@@ -1,0 +1,44 @@
+var x=new object();
+x.name="lanlan";
+
+var x={
+   name:"lanlan",
+   age:123
+}			//创建对象
+
+x.name/x["name"]	//获取属性
+delete x.name		//删除对象属性
+
+var d=new Date();
+var d=new Date(2015,8,12,12,12,12,111);
+var d=new Date("2015-8-22");
+var d=new Date("2015/8/12");
+var d=new Date(1241241251244214);
+
+
+d.toDateString();
+d.toTimeString();
+d.toUTCString();	//世界时间
+d.toLocaleDateString();
+d.toLocaleTimeString();
+d.toLocaleString();	//本地时间
+d.toString();	//转化为字符串
+d.valueof();	//获取原始值
+
+Date.parse(d);			
+d.getTime()/d.setTime()		//返回毫秒数
+d.UTC();	//世界的毫秒数
+
+d.set/getDate();
+d.set/getDay();			//星期0-6
+d.set/getFullYear();
+d.set/getMonth();			//注意月份值为0-11
+d.set/getHours();
+d.set/getMinutes();
+d.set/getSeconds();
+d.set/getMilliseconds();		//年月日时分秒毫秒set/get之后加UTC获取相对于世界的时间
+
+
+setInterval(function（）{}，num);		
+setTimeout(function（）{}，num);		//设置定时器和延时器
+

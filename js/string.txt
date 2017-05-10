@@ -1,0 +1,26 @@
+typeof xx		//判断类型
+new String("ooo"); 		//对象object类型
+String（"sadf"）/"afds"		//string类型
+字符串string的两义性
+string.length		//长度
+
+
+string[1]/string.charAt(1)	//获取该下标字符
+string.charCodeAt(2)		//获取下标字符ascii编码
+string.foromCharCode(num);	//ascii码转字符
+string.concat()/string+""	//合并字符串
+
+
+
+string.indexOf("abc");		//查找并返回首位置，没有则为-1
+string.lastIndexOf("abc");	//末位置，没有则返回-1
+sring.search()		//查找返回，可用正则表达式
+string.replace()	//查找替换，可用正则表达式
+
+
+string.substring()	//获取部分字符串
+string.split()		//分割字符串
+string.toLowerCase()
+string.toUpperCase()	//转大小写
+
+

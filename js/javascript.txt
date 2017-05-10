@@ -1,0 +1,19 @@
+javascript
+弱类型   直译   跨平台   动态   基于对象的客户端脚本语言
+
+基本类型有
+string   boolean   number   object   array
+特殊类型
+undefind   null
+
+
+typeof/typeof()出的值有
+string   boolean   number   object   function   undefind
+
+isNaN()		//判断是否为非数字
+
+字面量（变量）
+
+
+
+arguments

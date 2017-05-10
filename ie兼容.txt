@@ -1,0 +1,64 @@
+ie6兼容：
+*width:49.9%;ie6
+清浮动 clear:both 。 zoom: 1;是在处理兼容性问题
+IE 6图片的PNG格式兼容js代码：
+ie6Fixpng.js
+ie6 默认不允许超出父元素
+
+右浮动和右margin产生双边锯的问题
+解决办法：display：inline
+
+IE 6浏览器左右两边的高度不一致的原因是height和字体的行高把盒子撑开了；
+解决方法：设置line-height：1；overflow：hidden
+
+如何解决IE8一下的input框文字偏上问题
+  /*CSS Hack “\9”表示所有IE浏览器*/
+        line-height:30px\9;
+
+_属性
+input尽量不要用高度100%
+
+
+技巧
+居中部分的类为comWidth
+视频中FW选择某块图片时，老师并没有说方法。很苦恼自己摸索了下。原来是选择LOGO这块图片时，出现选择框后点右键。找到插入矩形切片。快捷键是ALT+SHIFT+U
+
+position：relative；层级增高
+
+font:14px/1 "microsoft yahei"
+
+margin-right:-2px;浮动宽度不够
+text-indent:10px;icon图标距离问题
+
+
+
+
+
+
+
+resetjs
+input{
+	outline:none;
+	background:none;
+	border:none;
+}
+.clearfix:after{
+	content:"";
+	clear:both;
+	display:block;
+}
+.fl{
+	float:left;
+}
+.fr{
+	float:right;
+}
+.comWidth{
+	width:1000px;
+	margin:0 auto;
+}
+
+elag
+
+
+筱崎爱

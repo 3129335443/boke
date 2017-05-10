@@ -1,0 +1,64 @@
+window.document		dom对象
+window.history		历史记录对象
+window.location		浏览器地址信息（可用于跳转或者刷新）
+window.frames		框架对象获取框架内容
+window.screen		客户端显示屏信息
+window.navigtor		导航对象，浏览器信息和系统信息
+
+
+
+系统方法
+window.alert();			警告框
+window.confirm("string");	选择框返回boolean值
+window.prompt("string");	提示框返回null或者用户输入的值
+window.open();		
+打开新的页面参数有 url,"新窗口名字"，"_blank/_parent","width=0,heihgt=0,top=0,left=0"
+并且返回子窗口对象
+window.opener()		返回父窗口对象（谷歌不支持，ie、火狐支持）
+window.setInterval();		定时器
+window.clearInterval();		清除定时器
+
+window.setTimeout();		延时器
+window.clearTimeout();		清除延时器
+
+window.close();			关闭窗口
+window.print();			打印机服务
+
+
+
+	/////location对象的属性
+location.hash="#1"		锚点
+location.href=url		整个url
+
+location.pritocal	协议部分
+
+location.host		主机端口名
+location.hostname	主机名
+location.port		端口号
+
+location.pathname	路径名
+
+location.search		查询字符串
+
+	////location对象的方法
+location.assign()	跳转到指定页面等同于href
+location.reload(boolean)	刷新页面true缓存刷新false重置刷新
+location.replace(url)		替换当前页面且不会产生历史痕迹
+	
+
+
+
+	//////history对象
+history.length		历史记录数目
+history.back();		返回上一步
+history.forward();	进入下一步
+history.go(number);	-1后退,0刷新，1前进
+
+
+
+	//////navigator
+navigator.appName;
+navigator.appVersion;
+navigator.platform;
+navigator.userAgent;
+

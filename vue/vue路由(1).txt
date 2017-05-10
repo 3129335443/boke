@@ -1,0 +1,137 @@
+安装
+方式1.
+	直接下载 / CDN
+
+	https://unpkg.com/vue-router/dist/vue-router.js
+
+	Unpkg.com 提供了基于 NPM 的 CDN 链接。上面的链接会一直指向在 NPM 发布的最新版本。你也可以像 https://unpkg.com/vue-router@2.0.0/dist/vue-router.js 这样指定 版本号 或者 Tag。
+	在 Vue 后面加载 vue-router，它会自动安装的：
+
+	<script src="/path/to/vue.js"></script>
+	<script src="/path/to/vue-router.js"></script>
+
+
+方式2.
+	NPM
+
+	npm install vue-router
+	如果在一个模块化工程中使用它，必须要通过 Vue.use() 明确地安装路由功能：
+
+	import Vue from 'vue'
+	import VueRouter from 'vue-router'
+
+	Vue.use(VueRouter)
+	如果使用全局的 script 标签，则无须如此（手动安装）。
+
+
+
+
+									
+{ path: '*', redirect: '/模版' }					重定向 和 别名
+
+
+									
+.router-link-active{}							当前路由样式
+
+									路由传参
+{ path: '/路由名/:属性', component: 模版 },					定义路由
+<router-link to="'/路由名/'+属性值"></router-link>				传参
+{{$route.params.id}}								取值
+
+
+
+										配置子路由
+
+										子组件里面申明 
+ <router-link to="/foo">Go to Foo</router-link>
+<router-view></router-view>
+										之后配置路由
+const routes = [
+  { path: '/foo', component: { template: '<div>foo</div>' }，
+	children:[
+		path: 'zi', component: { template: '<div>foo</div>' }		//注意要把path的”/“去掉
+	]
+ },
+  { path: '/bar', component: { template: '<div>bar</div>' } },
+   { path: '*', redirect: '/foo' }
+]
+
+
+path:":name"
+<router-link to="/:foo">Go to Foo</router-link> 			动态传参要加"/",一般默认
+
+
+<router-link to="{name:'路由名',params:{id:123}}"></router-link>	 命名路由
+
+
+
+<router-view></router-view>						多视图路由
+<router-view name="content"></router-view>
+<router-view name="footer"></router-view>
+
+{ path: '/foo', components:{
+			default:组件1,
+			content:组件2,
+			footer:组件3
+		}
+ },
+
+
+
+									路由实现代码：
+									html代码：
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+<div id="app">
+  <h1>Hello App!</h1>
+  <p>
+    									<!-- 使用 router-link 组件来导航. -->
+    									<!-- 通过传入 `to` 属性指定链接. -->
+    								<!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+    <router-link to="/foo">Go to Foo</router-link>
+    <router-link to="/bar">Go to Bar</router-link>
+  </p>
+ 									 <!-- 路由出口 -->
+  									<!-- 路由匹配到的组件将渲染在这里 -->
+  <router-view></router-view>
+</div>
+
+
+
+									js代码
+
+//  					如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
+
+//									定义（路由）组件。
+// 									可以从其他文件 import 进来
+const Foo = { template: '<div>foo</div>' }
+const Bar = { template: '<div>bar</div>' }
+
+//  									定义路由
+// 									每个路由应该映射一个组件。 其中"component" 可以是
+// 									通过 Vue.extend() 创建的组件构造器，
+// 									或者，只是一个组件配置对象。
+//									{template:模版}
+const routes = [
+  { path: '/foo', component: Foo },
+  { path: '/bar', component: Bar },
+   { path: '*', redirect: '/foo' }
+]
+
+//   									创建 router 实例，然后传 `routes` 配置
+// 									你还可以传别的配置参数, 不过先这么简单着吧。
+const router = new VueRouter({
+  routes 								// （缩写）相当于 routes: routes
+})
+
+// 									创建和挂载根实例。
+// 									记得要通过 router 配置参数注入路由，
+// 									从而让整个应用都有路由功能
+const app = new Vue({
+  router，
+  							//=>（h）?模块中使用要加
+}).$mount('#app')
+
+// 									$mount('#app')相当于el:"#app"

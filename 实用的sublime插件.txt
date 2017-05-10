@@ -1,0 +1,22 @@
+实用的sublime插件集合 – sublime推荐必备插件
+http://blog.csdn.net/u013921880/article/details/53665335
+Emmet
+JSFormat
+Alignment
+sublime-autoprefixer
+Clipboard History
+Git
+jQuery
+Doc?Blockr
+Color?Picker
+
+ConvertToUTF8
+
+AutoFileName
+
+Nodejs
+IMESupport
+Trailing spaces
+GBK Encoding Support
+
+localization

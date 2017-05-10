@@ -1,0 +1,18 @@
+array.length		//长度可改变如a.length-1
+for(var i in array){}	//遍历
+array[0]		//去下标为0的数
+
+
+
+array.pop();		//移除最后一个
+array.push();		//添加最后一个
+array.map(function(fn(x)){});		//应用到每一个子元素
+array.reduce(function(fn(x,y)){});		//子元素相加
+array.unshift();	//添加多个到首部
+array.shift();		//移除首个
+
+array.reverse();		//顺序颠倒
+array.sort(function(fn){});	//排序
+array.concat();			//合并数组或string
+array.slice();			//获取部分字符串
+array.splice(index,length,string,string,string);	//删除/截取/替换字符串

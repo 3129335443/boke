@@ -1,0 +1,59 @@
+$event.cancelBubble=true				阻止冒泡
+@click.stop="show()"
+
+
+$event.keycode						键值、
+$event.key						键名
+
+mounted:function(){}   					程序运行时执行
+destroyed:function(){}					程序销毁之后
+
+this.$destory();					销毁实例
+
+
+Vue.component("组件名英文",{				注册并定义组件
+	template:<h1>模版</h1>，
+	data:function(){
+		return{data:"数据"}
+	}
+})							
+components:{						方式2定义注册组件↓
+	"组件名":{						除了data不同其他都一样
+		template:"<h1>模版</h1>"，
+		data:function(){
+			return {
+				data:"数据"
+			}
+		}，
+		methods:{
+			asd:function(){}
+		}
+	}
+}
+
+
+<script type="x-template" id="header">			组件模版
+	<div class="header">asdfdsfa</div>
+</script>
+
+<template id="header">					定义模版方式2	
+	<div>123</div>						必须有根元素包裹
+</template>							否则只显示第一行，并报错
+
+
+
+
+components:{
+	child:{
+		components:{	
+			props:[xx]			验证
+			props:{					类型验证式接受参数
+				xx:String,
+				default:55			默认值可以是函数
+			}
+		}
+	}
+}
+子标签
+<h1 :xx="1"></h1>
+

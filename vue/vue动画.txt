@@ -1,0 +1,57 @@
+require的是插件文件夹pack。json里面的name名字
+
+							动画实现
+fade-enter-active						定义累（自定义名+"enter-active"）
+fade-leave-active	
+<transition name="fade"						transition包裹 要动画的元素（单个运动）
+enter-active-class="class"						transition-group (要绑定唯一的key属性值)
+leave-active-class="class"
+>
+	<h1 class="animated">12332</h1>
+</transition>
+
+
+animated.css
+
+
+<transition 													
+@before-enter="进入之前函数"
+@enter="进入时函数"
+@after-enter="进入后函数"				过度函数默认传入$event事件对象，
+							可以借此进行dom操作，如改变颜色
+@before-leave="离开之前"
+@leave="离开时"
+@after-leave="离开后"
+>
+	<h1 class="animated">12332</h1>
+</transition>
+
+
+
+
+
+enter:function(el,done){					
+	velocity(el,{
+		font-size:"20px"
+	},{
+		duration:1000,				velocity动画库的使用
+		loop:3
+	})
+
+	velocity(el,{
+		font-size:"10px"
+	},{
+		complete:done				动画完成时加done，否则回同步执行
+	})
+}							
+
+
+
+<transition>
+	<component :is="模版吗"></component>		动态模版动画
+</transition>
+
+
+<transition>
+	<router-view></router-view>			路由切换动画
+</transition>
