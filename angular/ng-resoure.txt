@@ -1,0 +1,474 @@
+$resource模块是基于$http的一个封装.下面来看看它的详细用法
+
+1.引入angular-resource.min.js文件
+
+2.在模块中依赖ngResourece,在服务中注入$resource
+
+var HttpREST = angular.module('HttpREST',['ngResource']);
+HttpREST.factory('cardResource',function($resource){
+    return $resource('/card/user/:userID/:id',{userID:123,id:'@id'},{charge:{method:'POST',params:{charge:true},isArray:false}})
+});
+3.$resource的参数:
+
+$resource(url,{url参数},{自定义方法})
+
+url: 必填,资源的基础url
+
+url中带有 ':' 项的是根据第二个参数来进行配置的. 
+
+url参数: 选填,配置url中的带有 ':' 项的参数
+
+eg:
+
+('/card/user/:userID/:id',{userID:123,id:'@id'}),那么userID会被配置为123.
+
+另外,在调用$resource()的方法的时候(比如get,query...),可以传入参数覆盖这里对url参数的配置,这在后面说得到它的方法的时候再详解
+
+而id属性在后面讲第三个参数的时候讲解
+
+自定义方法: 
+
+使用$resource获取到的资源,或者通过$resource实例化的资源,资源本身会具有一些方法,比如$save,第三个参数用于给资源添加自定义的方法:详见:http://www.cnblogs.com/liulangmao/p/3907032.html
+
+4.$resource()的方法:
+
+$resource()一共有以下5个方法:
+
+get: 
+
+{method:'GET'}
+
+一般用于获取某个资源:
+
+query:
+
+{method:'GET',isArray:true}
+
+一般用于获取一整套的资源,以数组形式返回
+
+save:
+
+{method:'POST'}
+
+一般用于保存某个资源,有可能是新建的资源,也有可能是更新现有的资源
+
+remove:
+
+{method:'DELETE'}
+
+一般用于删除某个资源
+
+delete:
+
+{method:'DELETE'}
+
+一般用于删除某个资源
+
+ 
+
+eg:
+
+1.首先通过$resource创建一个服务:
+
+var HttpREST = angular.module('HttpREST',['ngResource']);
+
+HttpREST.factory('cardResource',function($resource){
+    return $resource('/card/user/:userID/:id',{userID:123,id:'@id'},{charge:{method:'POST',params:{charge:true},isArray:false}})
+});
+这个cardResource服务,返回的是一个对象,对象有get,query,save,remove,delete五个方法
+
+ 
+
+2.然后我们通过cardResource这个服务,来创建另外一个获取资源的服务:
+
+复制代码
+HttpREST.factory('httpCard',function($q,cardResource){
+    return {
+        getById:function(cardID){
+            var defer = $q.defer();
+            cardResource.get({id:cardID},function(data,headers){
+                defer.resolve(data);
+            },function(data,headers){
+                defer.reject(data);
+            });
+            return defer.promise
+        },
+        query:function(){
+            var defer = $q.defer();
+            cardResource.query(function(data,headers){
+                defer.resolve(data);
+            },function(data,headers){
+                defer.reject(data);
+            });
+            return defer.promise
+        }
+    }
+});
+复制代码
+httpCard这个服务返回的对象有两个方法,一个getById方法,用于通过id加载资源,一个query方法,用于获取全部的资源.
+然后来讲解一下get方法和query方法的用法:
+
+get和query方法都是GET类型的请求,他们的调用方式是相同的:
+
+cardResource.action([parameters], [success], [error])
+
+[parameters]: 可选. 一个json对象,用于配置url里的参数,比如这里写了{id:cardID},那么提交的请求url就是 '/card/user/123/cardID'.
+
+                    可以不填,不填就直接按照$resource()里的url来提交,注意,不填的话,不需要给个空,可以直接写success回调,angular能够判断出它没有填第一个参数,而不是死板的按照顺序来解读参数.
+
+[success]:可选. 请求成功后的回调函数.回调接受2个参数(注意这里和$http有所不同):
+
+              function(data,headers){
+
+              //data是请求到的内容
+
+              //headers是响应头
+
+              }
+
+[error]:可选. 请求失败后的回调.回调接受1个参数
+
+              function(httpResponse){
+
+              //httpResponse暂不知道是什么. 反正是和响应有关
+
+              }
+
+凡是通过$resource返回的对象,一定是json格式的,如果后台返回的数据不是json,$resource也会按照自己的方式处理成json格式,比如后台返回字符串'我爱你',那么如果是get方法,得到的数据就是:
+
+{
+0:我,
+1:爱,
+2:你
+}
+
+而query方法定义了isArray为true,所以他的返回值必须是数组,并且数组里的每个值都必须是json格式的对象.如果返回的是字符串'我爱你',那么如果是query方法,得到的数据就是:
+
+[
+
+{0:'我'},
+
+{0:'爱'},
+
+{0:'你'}
+
+]
+
+如果返回的是一个json对象{name:'code_bunny'},那么得到的数据就是:
+
+[{name:'code_bunny'}]
+
+所以,在后台最好就做好相应的处理,按照规范格式返回数据
+
+ 
+
+3. 在控制器中使用httpCard服务来获取资源:
+
+复制代码
+HttpREST.controller('Card',function($scope,httpCard,cardResource){
+    //通过id获取银行卡
+    $scope.card_1 = httpCard.getById(1);
+    $scope.card_2 = httpCard.getById(2);
+    $scope.card_3 = httpCard.getById(3);
+    //获取所有的银行卡
+    $scope.cards = httpCard.query();
+
+});
+复制代码
+复制代码
+  <span>{{card_1['name']}}</span>
+  <span>{{card_1['amount']}}</span>
+  <br/>
+  <span>{{card_2['name']}}</span>
+  <span>{{card_2['amount']}}</span>
+  <br/>
+  <span>{{card_3['name']}}</span>
+  <span>{{card_3['amount']}}</span>
+  <br/>
+复制代码
+node:
+
+复制代码
+var cards = [
+    {
+        id:1,
+        name:'建设银行',
+        amount:0
+    },
+    {
+        id:2,
+        name:'中国银行',
+        amount:0
+    },
+    {
+        id:3,
+        name:'上海银行',
+        amount:0
+    }
+];
+
+app.get('/card/user/123/:id',function(req,res){
+    var data = cards[req.params.id-1];
+    setTimeout(function(){res.send(data)},2000)
+});
+app.get('/card/user/123',function(req,res){
+    res.send(cards)
+});
+复制代码
+
+
+关于card_1...cards明明是promise对象,但视图中却正确显示了资源的问题,请参考:http://www.cnblogs.com/liulangmao/p/3907307.html
+
+  
+
+4. 在控制器中使用cardResource服务的save方法来更新资源:
+
+复制代码
+HttpREST.controller('Card',function($scope,httpCard,cardResource){
+    $scope.card_3 = httpCard.getById(3);
+    //更新id为3的银行卡
+    $scope.updataCard = function(){
+        $scope.card_3.then(function(data){
+            data.name='工商银行';
+            cardResource.save(data);
+            //data.$save()
+        });
+    };
+});
+复制代码
+  <button ng-click="updataCard()">更新id为3的银行卡</button>
+  <br/>
+
+<span>{{card_3['name']}}</span>
+  <span>{{card_3['amount']}}</span>
+node:(这段nodejs同时处理了charge和save)
+
+复制代码
+var url = require('url');
+app.post('/card/user/123/:id',function(req,res){
+    var index = req.params.id-1;
+    var query = url.parse(req.url,true)['query'];
+    if (query.charge){
+        cards[index]['amount']+= Number(query['amount'])
+    }
+    else {
+        cards[index] = req.body;
+    }
+    res.send(cards[index]);
+});
+复制代码
+  
+
+
+
+点击后→
+
+
+
+cardResource.save(data) 和 data.$save()在这里,两者是等价的.但是在有参数的时候,他们接受的参数其实是不同的:
+使用cardResource.save([parameters], postData, [success], [error])方法时,可以接受四个参数:
+
+[parameters]: 可选.用于配置url参数,比如配置{userID:124},那么请求url就会变成 'card/user/124/3',其中的3,还是从请求体的id属性获取的.
+
+                    同样,如果没有参数需要配置,是不要填空的.不存在顺序一一对应.可以直接把postData作为第一个参数.
+
+postData: 必填. 发送的请求体. save方法是post请求,必须要带有请求体.
+
+[success]:选填. 响应成功后的回调函数,参数同get方法成功回调里的参数
+
+[error]:选填. 响应失败后的回调函数.参数同get方法失败回调里的参数
+
+使用data.$save([parameters], [success], [error])方法时,可以接受三个参数:
+
+[parameters]: 可选.注意它不是用于配置url的参数的.它是用来设置url?后面的参数的! 比如设置{name:'code_bunny'},那么请求url就会变成'card/user/123/3?name=code_bunny',
+
+                    通过$save方法来调用save方法,是不能够配置url参数的.它直接就是提交资源自己.
+
+                    同样,如果没有参数需要配置,是不要填空的.不存在顺序一一对应.可以直接把[success]作为第一个参数.
+
+[success]:选填. 响应成功后的回调函数,参数同get方法成功回调里的参数
+
+[error]:选填. 响应失败后的回调函数.参数同get方法失败回调里的参数
+
+至于为什么要在then回调里处理,为什么save后视图会自动更新,请查看:http://www.cnblogs.com/liulangmao/p/3907307.html 以及 http://www.cnblogs.com/liulangmao/p/3907032.html
+
+ 
+
+5. 在控制器中使用cardResource服务的save方法来新建资源:
+
+(1)新建带有id的资源:
+
+复制代码
+    //添加id为4的银行卡
+    $scope.addCard4 = function(){
+        var card_4 = new cardResource();
+        card_4['id'] = 4;
+        card_4['name'] = '浦发银行';
+        card_4['amount'] = 0;
+        card_4.$save(function(data){$scope.card_4=data});
+        //cardResource.save(card_4,function(data){$scope.card_4=data});
+    };
+复制代码
+  <span>{{card_4['name']}}</span>
+  <span>{{card_4['amount']}}</span>
+node:(这段nodejs同时处理了charge和save)
+
+复制代码
+app.post('/card/user/123/:id',function(req,res){
+    var index = req.params.id-1;
+    var query = url.parse(req.url,true)['query'];
+    if (query.charge){
+        cards[index]['amount']+= Number(query['amount'])
+    }
+    else {
+        cards[index] = req.body;
+    }
+    res.send(cards[index]);
+});
+复制代码
+
+
+点击后→
+
+
+
+新建资源需要通过new cardResource(), 这样它就是$resource()的实例,就拥有了$save,$charge等资源的方法:
+
+card_4.$save(function(data){$scope.card_4=data});
+
+cardResource.save(card_4,function(data){$scope.card_4=data});
+
+上面已经说过了,这两种写法自然是等价的.但这里的回调里需要给$scope_card_4进行赋值,因为原来的$scope下是没有card_4这个变量的.
+
+(2)新建没有id的资源:
+
+复制代码
+    //添加没有id的银行卡
+    $scope.addCard = function(){
+        var newCard = new cardResource();
+        newCard['name'] = '农业银行';
+        newCard['amount'] = 0;
+        newCard.$save(function(data){$scope.card_5=data});
+        cardResource.save(newCard,function(data){$scope.card_5=data});
+        //newCard.$save(function(data){$scope.card_5=data});
+    };
+复制代码
+<button ng-click="addCard()">添加一张不指定id的银行卡</button>
+<br/>
+<span>{{card_5['name']}}</span>
+<span>{{card_5['amount']}}</span>
+node:
+
+app.post('/card/user/123',function(req,res){
+    var index = cards.length;
+    cards[index] = req.body;
+    res.send(cards[index]);
+});
+
+
+点击后→
+
+
+
+
+cardResource.save(newCard,function(data){$scope.card_5=data});
+newCard.$save(function(data){$scope.card_5=data});
+上面已经说过了,这两种写法自然是等价的.但这里的回调里需要给$scope_card_5进行赋值,因为原来的$scope下是没有card_5这个变量的.
+ (1)和(2)的区别在于:
+
+  资源是否有id,他们请求的路径是不同的.没有id的资源会请求'card/user/123',而有id的资源会请求'card/user/123/id',这在node里的处理是不同的.
+
+  在$resource中,基本url里面的 :id 这类通过参数指定的值,如果没有传入参数,那么它提交的路径里就不会包含这一项,比如:
+
+  return $resource('/card/user/:userID/:id',{userID:123,id:'@id'})
+  当使用query方法时,是没有id值的,get请求的路径就是/card/user/123
+
+  但是在node里面不是这样的:
+
+复制代码
+app.get('/card/user/123/:id',function(req,res){
+//这个只能处理带有id值的get请求,没有id请求不能被匹配到处理
+});
+app.get('/card/user/123',function(req,res){
+//这个用来处理没有id的get请求
+});
+app.post('/card/user/123/:id',function(req,res){
+//这个只能处理带有id值的post请求,没有id请求不能被匹配到处理
+});
+app.post('/card/user/123',function(req,res){
+//这个用来处理没有id的post请求
+});
+复制代码
+所以,处理有id的资源的post请求和处理没有id的资源的post请求,在node里需要写不同的匹配规则,在这里,对于没有id的资源,我们仅作模拟,就把它按照顺序保存在数组最后,然后当然还是把它返回给客户端.
+
+ 
+
+6. 在控制器中使用cardResource服务的自定义的charge方法来给资源进行充值操作:
+
+    //id为1的建设银行卡增加100元
+    $scope.addCharge = function(){
+        $scope.card_1.then(function(card){
+            card.$charge({amount:100});
+        })
+    }
+  <button ng-click="addCharge()">给建设银行的卡充值100元</button>
+  <br/>
+  <span>{{card_1['name']}}</span>
+  <span>{{card_1['amount']}}</span>
+node:(这段nodejs同时处理了charge和save)
+
+复制代码
+app.post('/card/user/123/:id',function(req,res){
+    var index = req.params.id-1;
+    var query = url.parse(req.url,true)['query'];
+    if (query.charge){
+        cards[index]['amount']+= Number(query['amount'])
+    }
+    else {
+        cards[index] = req.body;
+    }
+    res.send(cards[index]);
+});
+复制代码
+这里的charge充值方法需要带有请求参数,?amount=100,所以它不能使用cardResource.charge([params],data,[success],[error])这种方式来请求,只能通过调用资源自身的$charge方法来进行请求.
+
+card.$charge({amount:100})相当于请求了url: 'card/user/123/1?charge=true&amount=100'
+即使是RESTful架构,不表示就不可以在url中带有参数,带有参数不影响express对路径的匹配.获取路径参数的方法也就是使用url模块一样获取.
+无论POST请求还是GET请求,都可以带有参数,也都可以获取参数.
+
+这里对'/card/user/123/:id'这个url的请求做了判断,获取它的参数,然后判断参数里的charge是否等于true,是的话表示充值操作.不是的话表示更新资源操作.分别对资源进行处理,最后都是把操作过的资源返回给客户端.
+
+其中,url.parse(req.url,true),如果不带有true,不会把参数解析成json格式.
+
+点击后→
+
+ 
+
+7. 在控制器中使用cardResource服务的delete方法来删除资源:
+
+    //删除id为1的银行卡
+    $scope.delCard1 = function(){
+        $scope.card_1.then(function(card){
+            card.$delete();
+        })
+    }
+  <button ng-click="delCard1()">将id为1的银行卡删掉</button>
+  <br/>
+  <span>{{card_1['name']}}</span>
+  <span>{{card_1['amount']}}</span>
+node:
+
+app.delete('/card/user/123/:id',function(req,res){
+    var index = req.params.id-1;
+    cards[index] = null;
+    res.send({})
+});
+点击后→
+
+这里有两点需要注意:
+
+1.card.$delete()不等同于cardResource.delete(card),因为它这里是'DELETE'方式的请求,不是POST方式的请求,当我们使用card.$delete()的时候,它是把card作为请求体发送给后台的(相当于POST请求体).但是当我们使用cardResource.delete(card)的时候,它是把card对象解析成url参数一起传给后台的(相当于GET请求里url后面的参数).也就是说,card.$delete()请求的url是'card/user/123/1',附带请求体为card. 而cardResource.delete(card)请求的url是'card/user/123/1?amount=0&name=建设银行'.
+
+还有很重要的一点,其实请求url是'card/user/123/1?amount=0&name=建设银行'在这个例子中并不会改变后台的处理和返回,但是对于angular来说,card.$delete()会使用返回值去填充card,更新视图,但是cardResource.delete(card),它并非请求体就是card,所以返回值不会去填充card,不会更新视图.所以,在使用delete方法时,应该直接使用$delete,而不是delete.(remove亦然)
+
+2.删除以后,cards[0]就变成空的null,但是不能返回null,因为$resource必须返回json格式,所以要返回{}

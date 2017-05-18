@@ -1,0 +1,127 @@
+ngCookies都做了什么
+ 
+
+  根据官方的api文档，ngCookies的$cookieStore服务，提供了这样几个方法：
+
+   1.get(key); 
+
+   2.put(key, value);
+
+   3.remove(key);
+
+  以上方法都是对cookie进行写入、读取、删除操作，那么我们来看下源码（截取了部分源码），它都做了什么。
+
+复制代码
+  getAll: function() {
+     return $$cookieReader();
+   },
+
+  put: function(key, value, options) {
+     $$cookieWriter(key, value, calcOptions(options));
+  },
+
+  remove: function(key, options) {
+     $$cookieWriter(key, undefined, calcOptions(options));
+  }
+复制代码
+  概览以上代码可知，无非就是调用了$$cookieReader()和$$cookieWriter()两个方法，写入与删除用第二个参数区分。接下来我们来看一下$$cookieWriter()。
+
+ 
+
+复制代码
+function $$CookieWriter($document, $log, $browser) {
+  var cookiePath = $browser.baseHref();
+  var rawDocument = $document[0];
+
+  function buildCookieString(name, value, options) {
+    var path, expires;
+    options = options || {};
+    expires = options.expires;
+    path = angular.isDefined(options.path) ? options.path : cookiePath;
+    if (angular.isUndefined(value)) {
+      expires = 'Thu, 01 Jan 1970 00:00:00 GMT';
+      value = '';
+    }
+    if (angular.isString(expires)) {
+      expires = new Date(expires);
+    }
+
+    var str = encodeURIComponent(name) + '=' + encodeURIComponent(value);
+    str += path ? ';path=' + path : '';
+    str += options.domain ? ';domain=' + options.domain : '';
+    str += expires ? ';expires=' + expires.toUTCString() : '';
+    str += options.secure ? ';secure' : '';
+
+    // per http://www.ietf.org/rfc/rfc2109.txt browser must allow at minimum:
+    // - 300 cookies
+    // - 20 cookies per unique domain
+    // - 4096 bytes per cookie
+    var cookieLength = str.length + 1;
+    if (cookieLength > 4096) {
+      $log.warn("Cookie '" + name +
+        "' possibly not set or overflowed because it was too large (" +
+        cookieLength + " > 4096 bytes)!");
+    }
+
+    return str;
+  }
+
+  return function(name, value, options) {
+    rawDocument.cookie = buildCookieString(name, value, options);
+  };
+}
+复制代码
+  首先，它通过encodeURIComponent()将key和value进行编码，接下来拼字符串时加“=”，这些是为了$$cookieReader()做准备。然后追加一些其他信息，然后限制长度,最后通过$document[0].cookie存到cookie中。不同在于，$$cookieWriter()在angular-cookie中，而$$cookieReader()却在angular.js中。接下来，我们看一下$$cookieReader()方法做了什么。
+
+复制代码
+function $$CookieReader($document) {
+  var rawDocument = $document[0] || {};
+  var lastCookies = {};
+  var lastCookieString = '';
+
+  function safeDecodeURIComponent(str) {
+    try {
+      return decodeURIComponent(str);
+    } catch (e) {
+      return str;
+    }
+  }
+
+  return function() {
+    var cookieArray, cookie, i, index, name;
+    var currentCookieString = rawDocument.cookie || '';
+
+    if (currentCookieString !== lastCookieString) {
+      lastCookieString = currentCookieString;
+      cookieArray = lastCookieString.split('; ');
+      lastCookies = {};
+
+      for (i = 0; i < cookieArray.length; i++) {
+        cookie = cookieArray[i];
+        index = cookie.indexOf('=');
+        if (index > 0) { //ignore nameless cookies
+          name = safeDecodeURIComponent(cookie.substring(0, index));
+          // the first value that is seen for a cookie is the most
+          // specific one.  values for the same cookie name that
+          // follow are for less specific paths.
+          if (isUndefined(lastCookies[name])) {
+            lastCookies[name] = safeDecodeURIComponent(cookie.substring(index + 1));
+          }
+        }
+      }
+    }
+    return lastCookies;
+  };
+}
+复制代码
+   首先，它将cookie取出来，分成数组，然后通过“=”来区分key和value。解析之后将当前和输入的key相等的值取出。
+
+   关于编码的问题，请浏览一下文章：encodeURI和 encodeURIComponent 的作用及应用
+
+   关于js原生的cookie，请见：关于document.cookie的使用
+
+   本文大概解释一下ngCookie的作了什么，怎么做的，如果有不对的地方（很正常 ^__^ ），请指正。
+
+  
+
+分类: Angular

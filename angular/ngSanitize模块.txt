@@ -1,0 +1,70 @@
+angular中的$sanitize这个服务依赖于ngSanitize模块.
+要学习这个服务,先要了解另一个指令: ng-bing-html.
+顾名思义,ng-bind-html和ng-bind的区别就是,ng-bind把值作为字符串,和元素的内容进行绑定,但是ng-bind-html把值作为html,和元素的html进行绑定.相当于jq里面的.text()和.html().
+但是,出于安全考虑,如果我们直接使用ng-bind-html是会报错的,ng-bind-html后面的内容必须经过一定的处理.
+处理的方式有两种,一种是使用$sce服务,另一种就是使用$sanitize服务.$sce服务怎么用,在以后的文章中会独立讲解,这篇主要讲解$sanitize服务.
+$sanitize会根绝一个白名单来净化html标签.这样,不安全的内容就不会被返回. 白名单是根据$compileProvider的aHrefSanitizationWhitelist和imgSrcSanitizationWhitelist函数得到的. 
+看一个栗子:
+
+
+看一个栗子:
+
+html:
+
+复制代码
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <script src="../angular-1.3.2.js"></script>
+  <script src="angular-sanitize.min.js"></script>
+  <script src="script.js"></script>
+  <link type="text/css" href="../bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+  <table class="table table-bordered" ng-controller="ctrl">
+    <caption>通过ngSanitize模块的$sanitize服务解析html</caption>
+    <thead>
+    <tr>
+      <th>使用的指令</th>
+      <th>格式化方法</th>
+      <th>指令的写法</th>
+      <th>解析结果</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>ng-bind-html</td>
+      <td>使用内置的$sanitize <br/>(不需要出现在js里,只要模型添加了ngSanitize模块, <br/>然后使用ng-bind-html,它的值就自动通过$sanitize编译)</td>
+      <td><pre>&lt;div ng-bind-html="myHtml"&gt;<br>&lt;/div&gt;</pre></td>
+      <td><div ng-bind-html="myHtml"></div></td>
+    </tr>
+    <tr>
+      <td>ng-bind-html</td>
+      <td>使用$sce的trustAsHtml方法编译<br/>(以后会细讲$sce服务,这里不是重点)</td>
+      <td><pre>&lt;div ng-bind-html="trustHtml"&gt;<br>&lt;/div&gt;</pre></td>
+      <td><div ng-bind-html="trustHtml"></div></td>
+    </tr>
+    <tr>
+      <td>ng-bind</td>
+      <td>不编译</td>
+      <td><pre>&lt;div ng-bind="myHtml"&gt;<br>&lt;/div&gt;</pre></td>
+      <td><div ng-bind="myHtml"></div></td>
+    </tr>
+    </tbody>
+  </table>
+  <a class="btn btn-default" href="http://plnkr.co/edit/3FBasliZTRjKs3jwTpoR?p=preview" role="button">plunker</a>
+</div>
+</body>
+</html>
+
+
+var app =angular.module('myApp',['ngSanitize']);
+app.controller('ctrl',function($scope,$sce){
+    $scope.myHtml = '<p style="color:blue">an html\n' +
+    '<em onclick="this.textContent=\'code_bunny\'">click here</em>\n' +
+    'snippet</p>';
+    $scope.trustHtml = $sce.trustAsHtml($scope.myHtml)
+});
