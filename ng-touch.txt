@@ -1,9 +1,68 @@
 ngTouch
-一个角度模块，用于为触摸设备添加指令。
+一个模块，用于为触摸设备添加指令。
 
 如何使用它
-您必须在角度模块中包含ngTouch依赖项：
+必须在模块中包含ngTouch依赖项：
 var app = angular.module("demoapp", ["ngTouch"]);
 
-然后在您的HTML中，您可以使用：
+可以在html中使用：
 <div ng-touchmove="someFunction($event)" ng-touchstart="someFunction($event)" ng-touchend="someFunction($event)"></div>
+
+
+Angular-touch库用的不多，网上的例子也不多。写个触屏滑动的事件。
+先在页面上弄个div
+
+    <div id="content" align="center" ng-app="imageApp" image-controller="">
+        <p style="position: absolute; width: 100%; margin-top: 30px;z-index: -1;">
+            <img id="show"src="assets/image/logo.jpg" />
+        </p>
+    </div>
+
+
+
+
+
+
+引入两个库
+
+    <script type="text/javascript" src="js/angular/1.4.6/angular.min.js" ></script>
+    <script type="text/javascript" src="js/angular/1.4.6/angular-touch.min.js" ></script>
+
+
+
+
+
+注册事件
+
+        try{
+            angular.module('imageApp',['ngTouch'])
+                .directive('imageController',['$swipe',function($swipe){
+                    return {
+                        restrict:'EA',
+                        link:function(scope,ele,attrs,ctrl){
+                            var startX,startY,locked=false;
+                            $swipe.bind(ele,{
+                                'start':function(coords){
+                                    startX = coords.x;
+                                    startY = coords.y;
+                                },
+                                'move':function(coords){
+                                    var delta = coords.x - startX;
+                                    if(delta<-300 && !locked){
+                                        console.log('trun right');
+                                    }else if(delta>300 && !locked){
+                                        console.log('trun left');
+                                    }
+                                },
+                                'end':function(coords){
+                                },
+                                'cancel':function(coords){
+                                }
+                            });
+                        }
+                    }
+                }
+            ]);
+        }catch(e){
+            console.error(e);
+        }
