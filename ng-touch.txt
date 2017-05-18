@@ -1,0 +1,9 @@
+ngTouch
+一个角度模块，用于为触摸设备添加指令。
+
+如何使用它
+您必须在角度模块中包含ngTouch依赖项：
+var app = angular.module("demoapp", ["ngTouch"]);
+
+然后在您的HTML中，您可以使用：
+<div ng-touchmove="someFunction($event)" ng-touchstart="someFunction($event)" ng-touchend="someFunction($event)"></div>
